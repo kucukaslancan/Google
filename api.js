@@ -8,7 +8,7 @@ const cheerio = require('cheerio');
 const searchResults = [];
 
 // MongoDB bağlantısı
-mongoose.connect('mongodb+srv://alpcan99:Cankcksln_61@cluster0.8cddnaj.mongodb.net/googlekiller', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB bağlantı hatası:'));
 
