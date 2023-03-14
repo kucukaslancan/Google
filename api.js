@@ -62,10 +62,10 @@ app.post('/GoogleResult', (req, res) => {
                               "resultTitle": resultTitle,
                               "resultDescription": resultDescription
                             });
-                            searchResults.push(resultDescription);
+                            searchResults.push(data);
                             var config = {
                               method: 'post',
-                              url: 'http://localhost:3000/GoogleResult',
+                              url: 'https://googlekllr.herokuapp.com/GoogleResult',
                               headers: { 
                                 'Content-Type': 'application/json'
                               },
@@ -91,9 +91,6 @@ app.post('/GoogleResult', (req, res) => {
               });
              
             });
-           
-          
-         
       })
       .catch((err) => {
         console.log(err);
@@ -118,5 +115,5 @@ app.get('/external-api', async (req, res) => {
 
 // Sunucuyu başlatma
 app.listen(process.env.PORT || 3000, () => {
-  console.log('Sunucu '+process.env.port+' adresinde çalışıyor.');
+  console.log('Sunucu '+process.env.PORT+' adresinde çalışıyor.');
 });
