@@ -36,68 +36,71 @@ app.post('/GoogleResult', (req, res) => {
   // google sonuçlarını getir
   app.get('/GetResult', async (req, res) => {
     const eachCount = 20;
+    let keywordList = [];
+    
+    try {
+      const googleRes = await googleTrends.relatedQueries({ keyword: req.body.keyword });
+      const data = JSON.parse(googleRes);
+      const requests = [];
   
-      let keywordList = [];
-      googleTrends.relatedQueries({keyword: req.body.keyword})
-      .then((res) => {
-          let data = JSON.parse(res);
-          data.default.rankedList.forEach((item) => {
-              item.rankedKeyword.forEach((val) => {
-                  const keyVal = val['query'];
-                  const searchUrl = `https://search.yahoo.com/search?p=${keyVal}`;
-                    axios.get(searchUrl)
-                      .then((response) => {
-                        const html = response.data;
-                        const $ = cheerio.load(html);
-
-                        $('div[id="web"] div').each((i, el) => {
-                          const resultTitle = $(el).find('h3').find('a').last().contents().filter(function() {
-                            return this.nodeType === 3;
-                          }).last().text().trim();
-                          const resultDescription = $(el).find('div[class="compText aAbs"]').text();
-                          
-                          if (resultTitle && resultDescription) {
-                            var data = JSON.stringify({
-                              "keyword": keyVal,
-                              "resultTitle": resultTitle,
-                              "resultDescription": resultDescription
-                            });
-                            searchResults.push(data);
-                            var config = {
-                              method: 'post',
-                              url: 'https://googlekllr.herokuapp.com/GoogleResult',
-                              headers: { 
-                                'Content-Type': 'application/json'
-                              },
-                              data : data
-                            };
-                            
-                            axios(config)
-                            .then(function (response) {
-                                console.log(JSON.stringify(response.data.status));
-                            })
-                            .catch(function (error) {
-                              console.log(error);
-                            });
-                          
-                          }
-                        });
-          
-                      })
-                      .catch((error) => {
-                        console.log(error);
-                      });
-                  
+      data.default.rankedList.forEach((item) => {
+        item.rankedKeyword.forEach((val) => {
+          const keyVal = val.query;
+          const searchUrl = `https://search.yahoo.com/search?p=${keyVal}`;
+  
+          requests.push(
+            axios.get(searchUrl).then((response) => {
+              const html = response.data;
+              const $ = cheerio.load(html);
+              const results = [];
+  
+              $('div[id="web"] div').each((i, el) => {
+                const resultTitle = $(el).find('h3').find('a').last().contents().filter(function() {
+                  return this.nodeType === 3;
+                }).last().text().trim();
+                const resultDescription = $(el).find('div[class="compText aAbs"]').text();
+  
+                if (resultTitle && resultDescription) {
+                  results.push({
+                    keyword: keyVal,
+                    resultTitle: resultTitle,
+                    resultDescription: resultDescription
+                  });
+                }
               });
-             
-            });
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-
+  
+              return results;
+            }).catch((error) => {
+              console.log(error);
+            })
+          );
+        });
+      });
+  
+      const searchResults = await Promise.all(requests).then((responses) => {
+        return responses.flat();
+      });
+  
+      const config = {
+        method: 'post',
+        url: 'https://googlekllr.herokuapp.com/GoogleResult',
+        headers: { 'Content-Type': 'application/json' },
+        data: searchResults
+      };
+  
+      await axios(config).then((response) => {
+        console.log(JSON.stringify(response.data.status));
+      }).catch((error) => {
+        console.log(error);
+      });
+  
       res.json(searchResults);
+  
+    } catch (error) {
+      console.log(error);
+    }
   });
+  
  
 // tüm kayıtları sil
 app.post('/deleteAll', async (req, res) => {
