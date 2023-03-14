@@ -107,7 +107,7 @@ app.post('/GoogleResult', (req, res) => {
 // tüm kayıtları sil
 app.post('/deleteAll', async (req, res) => {
     await GoogleData.deleteMany();
-    res.json({ message: 'Kullanıcılar silindi.' });
+    res.json({ message: 'All data deleted!' });
   });
 
 
