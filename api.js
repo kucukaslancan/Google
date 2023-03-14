@@ -117,6 +117,6 @@ app.get('/external-api', async (req, res) => {
 });
 
 // Sunucuyu başlatma
-app.listen(3000, () => {
-  console.log('Sunucu http://localhost:3000 adresinde çalışıyor.');
+app.listen(process.env.PORT || 3000, () => {
+  console.log('Sunucu '+process.env.port+' adresinde çalışıyor.');
 });
