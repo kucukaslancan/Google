@@ -68,6 +68,20 @@ app.post('/GoogleResult', (req, res) => {
                   });
                 }
               });
+
+              
+              const config = {
+                method: 'post',
+                url: 'https://googlekllr.herokuapp.com/GoogleResult',
+                headers: { 'Content-Type': 'application/json' },
+                data: results
+              };
+          
+              axios(config).then((response) => {
+                console.log(JSON.stringify(response.data.status));
+              }).catch((error) => {
+                console.log(error);
+              });
   
               return results;
             }).catch((error) => {
@@ -81,18 +95,6 @@ app.post('/GoogleResult', (req, res) => {
         return responses.flat();
       });
   
-      const config = {
-        method: 'post',
-        url: 'https://googlekllr.herokuapp.com/GoogleResult',
-        headers: { 'Content-Type': 'application/json' },
-        data: searchResults
-      };
-  
-      await axios(config).then((response) => {
-        console.log(JSON.stringify(response.data.status));
-      }).catch((error) => {
-        console.log(error);
-      });
   
       res.json(searchResults);
   
