@@ -17,7 +17,8 @@ db.on('error', console.error.bind(console, 'MongoDB bağlantı hatası:'));
 const GoogleData = mongoose.model('GoogleData', {
   keyword: String,
   resultTitle: String,
-  resultDescription: String
+  resultDescription: String,
+  isUsed: Boolean
 });
 
 // Express uygulaması
@@ -64,13 +65,14 @@ app.post('/GoogleResult', (req, res) => {
                   results.push({
                     keyword: keyVal,
                     resultTitle: resultTitle,
-                    resultDescription: resultDescription
+                    resultDescription: resultDescription 
                   });
 
                   const postData = {
                     keyword: keyVal,
                     resultTitle: resultTitle,
-                    resultDescription: resultDescription
+                    resultDescription: resultDescription,
+                    isUsed: false
                   }
                   const config = {
                     method: 'post',
@@ -84,7 +86,7 @@ app.post('/GoogleResult', (req, res) => {
                   }).catch((error) => {
                     console.log(error);
                   });
-                  
+
                 }
               });
 
