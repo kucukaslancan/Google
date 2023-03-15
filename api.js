@@ -66,26 +66,29 @@ app.post('/GoogleResult', (req, res) => {
                     resultTitle: resultTitle,
                     resultDescription: resultDescription
                   });
+
+                  const postData = {
+                    keyword: keyVal,
+                    resultTitle: resultTitle,
+                    resultDescription: resultDescription
+                  }
+                  const config = {
+                    method: 'post',
+                    url: 'https://googlekllr.herokuapp.com/GoogleResult',
+                    headers: { 'Content-Type': 'application/json' },
+                    data: JSON.stringify(postData)
+                  };
+              
+                  axios(config).then((response) => {
+                    console.log(JSON.stringify(response.data.status));
+                  }).catch((error) => {
+                    console.log(error);
+                  });
+                  
                 }
               });
 
-              const postData = {
-                keyword: keyVal,
-                resultTitle: resultTitle,
-                resultDescription: resultDescription
-              }
-              const config = {
-                method: 'post',
-                url: 'https://googlekllr.herokuapp.com/GoogleResult',
-                headers: { 'Content-Type': 'application/json' },
-                data: JSON.stringify(postData)
-              };
-          
-              axios(config).then((response) => {
-                console.log(JSON.stringify(response.data.status));
-              }).catch((error) => {
-                console.log(error);
-              });
+            
   
               return results;
             }).catch((error) => {
