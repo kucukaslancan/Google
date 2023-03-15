@@ -69,12 +69,16 @@ app.post('/GoogleResult', (req, res) => {
                 }
               });
 
-              
+              const postData = {
+                keyword: keyVal,
+                resultTitle: resultTitle,
+                resultDescription: resultDescription
+              }
               const config = {
                 method: 'post',
                 url: 'https://googlekllr.herokuapp.com/GoogleResult',
                 headers: { 'Content-Type': 'application/json' },
-                data: results
+                data: JSON.stringify(postData)
               };
           
               axios(config).then((response) => {
